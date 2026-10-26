@@ -1,0 +1,12 @@
+import {mkdir,writeFile,cp} from 'node:fs/promises';
+import {spawnSync} from 'node:child_process';
+const version='5.7.284';
+await mkdir('tmp/pdfjs',{recursive:true});
+const response=await fetch(`https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-${version}.tgz`);
+if(!response.ok)throw Error(`PDF library download failed: ${response.status}`);
+await writeFile('tmp/pdfjs/package.tgz',Buffer.from(await response.arrayBuffer()));
+const result=spawnSync('tar',['-xf','package.tgz'],{cwd:'tmp/pdfjs',stdio:'inherit'});
+if(result.status!==0)throw Error('Cannot unpack PDF library');
+await mkdir('app/vendor/pdfjs',{recursive:true});
+for(const [source,target] of [['build/pdf.min.mjs','pdf.mjs'],['build/pdf.worker.min.mjs','pdf.worker.mjs'],['cmaps','cmaps'],['standard_fonts','standard_fonts'],['wasm','wasm'],['LICENSE','LICENSE']])await cp(`tmp/pdfjs/package/${source}`,`app/vendor/pdfjs/${target}`,{recursive:true});
+console.log(`Bundled PDF.js ${version}`);

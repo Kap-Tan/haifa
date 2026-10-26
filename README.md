@@ -20,7 +20,7 @@ GitHub writes use blob SHA checks. A conflict requires locking and reopening the
 
 ## Scan and comparison limits
 
-English OCR runs on the device. It supports candidate rows in the form `Test name 14.2 g/dL 13.0-17.0`. Different report layouts, qualitative results, inequalities, scientific notation, decimals using commas, and missing units/ranges need manual entry. Raw OCR text remains available for review. Extraction can miss rows; always check every item against the original report. The lab name and collection date are manually entered. PDF input is not supported; upload a photo/screenshot.
+English OCR runs on the device. It supports candidate rows in the form `Test name 14.2 g/dL 13.0-17.0`. Different report layouts, qualitative results, inequalities, scientific notation, decimals using commas, and missing units/ranges need manual entry. Raw OCR text remains available for review. Extraction can miss rows; always check every item against the original report. The lab name and collection date are manually entered. PDF uploads are supported up to 20 MB and 20 pages. Text-based PDFs are read directly; scanned pages use on-device OCR. The first page is previewed. Password-protected PDFs need an unlocked copy. Check every page against the extracted rows.
 
 Baseline is the earliest dated result for an exact test name (case/whitespace normalized) and unit, not a clinical target. Reference flags use the interval entered on that particular report. No unit conversions or fuzzy test-name merging are performed. Same-date results are ordered by stable report ID; use distinct collection dates to avoid ambiguity. Trend points are spaced by reading, not elapsed days. Deleting a report recalculates baseline and previous results.
 
@@ -31,3 +31,6 @@ This is a personal tracker, not an audited medical records service. GitHub authe
 Git history and backups retain encrypted old records after deletion. Revoking access does not erase previously downloaded ciphertext. Passphrase rotation and secure purge are not implemented. Do not commit plaintext data or secrets. Pages deployment requires GitHub Actions availability; verify workflow completion before using the hosted app.
 
 OCR: Tesseract.js 5.1.1, Tesseract.js-core 5.1.1, English tessdata 4.0.0. See `app/vendor/` license notices. `download-ocr.mjs` refreshes those fixed assets for development; deployed scanning makes no external OCR requests.
+
+PDF reading: bundled PDF.js 5.7.284 with local worker, character maps, fonts and image decoder assets. No report is sent to an external PDF service.
+
