@@ -1,0 +1,7 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {history,flag,parse,seal,open} from '../app/core.js';
+test('baseline is chronological and units remain separate',()=>{const result=history([{id:'b',date:'2026-02-01',items:[{name:'Glucose',unit:'mg/dL',value:100}]},{id:'a',date:'2025-01-01',items:[{name:'glucose',unit:'mg/dL',value:90},{name:'Glucose',unit:'mmol/L',value:5}]}],'Glucose','mg/dL');assert.deepEqual(result.map(i=>i.value),[90,100]);});
+test('flags use this report reference interval and include endpoints',()=>{assert.equal(flag({value:4,low:'4',high:'6'}),'In range');assert.equal(flag({value:3,low:'4',high:'6'}),'Low');assert.equal(flag({value:7,low:'4',high:'6'}),'High');});
+test('parser refuses qualified measurements instead of changing their meaning',()=>{assert.equal(parse('Glucose <5 mmol/L 4-6').length,0);assert.deepEqual(parse('Hemoglobin 14.2 g/dL 13.0-17.0'),[{name:'Hemoglobin',value:14.2,unit:'g/dL',low:'13.0',high:'17.0'}]);});
+test('vault encryption roundtrips and rejects another user passphrase or tampering',async()=>{const box=await seal({reports:[{value:123}]},'long unique test passphrase');assert.equal(JSON.stringify(box).includes('reports'),false);assert.deepEqual(await open(box,'long unique test passphrase'),{reports:[{value:123}]});await assert.rejects(open(box,'a different passphrase'));const changed={...box,ciphertext:(box.ciphertext[0]==='A'?'B':'A')+box.ciphertext.slice(1)};await assert.rejects(open(changed,'long unique test passphrase'));});
