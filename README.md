@@ -8,7 +8,7 @@ Node 22 or newer: `node server.mjs`, then open http://localhost:4173. Run tests 
 
 ## GitHub hosting and data
 
-`haifa` contains source code and a Pages deployment workflow that publishes **only `app/`**. Enable Settings → Pages → GitHub Actions. Private repository Pages requires an eligible paid GitHub plan. The deployed application shell may be publicly visible. It contains no health records, access tokens, or encryption keys.
+`haifa` is a public source repository and contains a Pages deployment workflow that publishes **only `app/`**. Settings → Pages → GitHub Actions is the publishing source. The application shell is publicly visible. It contains no health records, access tokens, or encryption keys.
 
 Use the separate **private** `Kap-Tan/haifa-data` repository for ciphertext. Never enable Pages on the data repository. For other independent users, create separate private data repositories owned by them; do not share repository credentials. Shared data repository collaborators can read, overwrite or delete each other's encrypted files, even though passphrases prevent decryption. Separate repositories are the authorization boundary; vault IDs alone are not access control.
 
